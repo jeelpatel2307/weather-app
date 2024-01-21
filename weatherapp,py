@@ -1,1 +1,71 @@
+import requests
+
+def get_weather(api_key, city):
+    """
+    Get current weather information for a given city using the OpenWeatherMap API.
+
+    Args:
+    - api_key (str): Your OpenWeatherMap API key.
+    - city (str): The name of the city for which weather information is requested.
+
+    Returns:
+    - dict: Current weather information.
+    """
+    base_url = "http://api.openweathermap.org/data/2.5/weather"
+    
+    # Create parameters for the API request
+    params = {
+        'q': city,
+        'appid': api_key,
+        'units': 'metric'  # Use 'imperial' for Fahrenheit or 'metric' for Celsius
+    }
+
+    # Make the API request
+    response = requests.get(base_url, params=params)
+
+    # Check if the request was successful (status code 200)
+    if response.status_code == 200:
+        # Parse the JSON response
+        weather_data = response.json()
+        return weather_data
+    else:
+        print(f"Error: Unable to fetch weather information. Status Code: {response.status_code}")
+        return None
+
+def display_weather(weather_data):
+    """
+    Display the current weather information.
+
+    Args:
+    - weather_data (dict): Current weather information from the API.
+    """
+    if weather_data:
+        # Extract relevant information from the API response
+        city = weather_data['name']
+        temperature = weather_data['main']['temp']
+        description = weather_data['weather'][0]['description']
+
+        # Display the weather information
+        print(f"Weather in {city}:")
+        print(f"Temperature: {temperature}°C")
+        print(f"Description: {description.capitalize()}")
+    else:
+        print("Unable to display weather information.")
+
+def weather_app():
+    # Get the OpenWeatherMap API key
+    api_key = input("Enter your OpenWeatherMap API key: ")
+
+    # Get the city for which weather information is requested
+    city = input("Enter the city name: ")
+
+    # Get the weather information
+    weather_data = get_weather(api_key, city)
+
+    # Display the weather information
+    display_weather(weather_data)
+
+if __name__ == "__main__":
+    # Run the Weather App
+    weather_app()
 
